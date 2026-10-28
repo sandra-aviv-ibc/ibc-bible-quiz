@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bible Context Challenge</title>
+<style>
+:root{--ink:#17243a;--muted:#667085;--paper:#fffdf8;--gold:#d7a23a;--sand:#f3ead7;--blue:#2f5d7c;--green:#416c5b;--red:#a44b4b;--line:#e6dcc7}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 15% 15%,#f6ecd7 0 12%,transparent 34%),linear-gradient(135deg,#e8ddc8,#f7f2e8 48%,#dfe8e5);color:var(--ink);min-height:100vh;display:grid;place-items:center;padding:24px}
+.game{width:min(920px,100%);background:rgba(255,253,248,.97);border:1px solid rgba(111,85,44,.18);border-radius:26px;box-shadow:0 24px 70px rgba(47,44,36,.18);overflow:hidden}
+.top{padding:24px 30px 18px;background:linear-gradient(120deg,#18314a,#2f5d7c);color:white;position:relative}.top:after{content:"";position:absolute;right:-35px;top:-45px;width:190px;height:190px;border:1px solid rgba(255,255,255,.16);border-radius:50%;box-shadow:0 0 0 22px rgba(255,255,255,.04),0 0 0 46px rgba(255,255,255,.03)}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.78}.top h1{margin:5px 0 6px;font-size:clamp(27px,4vw,42px);line-height:1}.top p{margin:0;max-width:650px;color:#e7edf2}.barrow{display:flex;align-items:center;gap:14px;margin-top:20px}.bar{height:8px;background:rgba(255,255,255,.17);border-radius:99px;overflow:hidden;flex:1}.fill{height:100%;width:0;background:#f4c969;transition:.4s}.counter{font-weight:700;font-size:13px;white-space:nowrap}
+.main{padding:30px}.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.pill{padding:7px 11px;border-radius:99px;background:var(--sand);color:#765c2b;font-size:12px;font-weight:800;letter-spacing:.04em}.score{font-weight:800;color:var(--blue)}
+.q{font-family:Georgia,'Times New Roman',serif;font-size:clamp(23px,3vw,31px);line-height:1.25;margin:0 0 22px}.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}.answer{appearance:none;border:1px solid var(--line);background:white;border-radius:15px;padding:16px 17px;text-align:left;color:var(--ink);font-size:15px;line-height:1.35;cursor:pointer;transition:.18s;min-height:74px;display:flex;gap:12px;align-items:flex-start}.answer:hover{transform:translateY(-2px);border-color:#bba574;box-shadow:0 7px 18px rgba(74,59,32,.08)}.letter{display:grid;place-items:center;min-width:28px;height:28px;border-radius:9px;background:#f4efe5;font-weight:900;color:#705b32}.answer.correct{border-color:#75a28d;background:#eef7f2}.answer.wrong{border-color:#c98b8b;background:#fff1f1}.answer.dim{opacity:.56}.answer:disabled{cursor:default;transform:none}
+.feedback{display:none;margin-top:18px;padding:17px 18px;border-radius:15px;background:#f5f2eb;border-left:4px solid var(--gold);line-height:1.5}.feedback.show{display:block;animation:up .25s ease}.feedback strong{display:block;margin-bottom:4px}.actions{display:flex;justify-content:flex-end;margin-top:18px}.next,.restart{border:0;background:var(--blue);color:white;font-weight:800;padding:12px 18px;border-radius:12px;cursor:pointer}.next{display:none}.next.show{display:inline-block}.source{margin-top:22px;padding-top:15px;border-top:1px solid #eee4d3;color:var(--muted);font-size:12px}.source b{color:#475467}.result{display:none;text-align:center;padding:14px 0 8px}.result.show{display:block}.result .big{font-size:68px;font-weight:900;color:var(--blue);line-height:1}.result h2{font-family:Georgia,serif;font-size:31px;margin:12px 0 8px}.result p{color:var(--muted);max-width:620px;margin:0 auto 22px;line-height:1.5}.badge{font-size:42px;margin-bottom:5px}@keyframes up{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:680px){.answers{grid-template-columns:1fr}.main{padding:22px}.top{padding:22px}.meta{align-items:flex-start}.answer{min-height:0}}
+</style>
+</head>
+<body>
+<section class="game">
+<header class="top">
+  <div class="eyebrow">Israel Bible Center · Student Challenge</div>
+  <h1>Bible Context Challenge</h1>
+  <p>Six questions. We begin gently. Then the land, language, and first-century context start asking for attention.</p>
+  <div class="barrow"><div class="bar"><div class="fill" id="fill"></div></div><div class="counter" id="counter">Question 1 of 6</div></div>
+</header>
+<main class="main">
+  <div id="quiz">
+    <div class="meta"><span class="pill" id="level">WARM-UP</span><span class="score" id="score">0 points</span></div>
+    <h2 class="q" id="question"></h2>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions"><button class="next" id="next">Next question →</button></div>
+    <div class="source" id="source"></div>
+  </div>
+  <div class="result" id="result">
+    <div class="badge" id="badge">🧭</div><div class="big" id="finalScore">0/6</div>
+    <h2 id="resultTitle">Journey complete</h2><p id="resultText"></p>
+    <button class="restart" onclick="restart()">Play again</button>
+  </div>
+</main>
+</section>
+<script>
+const questions=[
+{level:'WARM-UP',q:'Which body of water lies along Israel’s western coast?',a:['The Mediterranean Sea','The Dead Sea','The Sea of Galilee','The Red Sea'],c:0,fb:'The Mediterranean forms the western edge of the land. Easy start — the compass is working.',src:'Listening to the Land of the Bible I · Bible and Geography'},
+{level:'WARM-UP',q:'In the Bible, the phrase “a land flowing with milk and honey” describes which land?',a:['Egypt','The Promised Land / land of Israel','Babylon','The wilderness of Sinai'],c:1,fb:'The phrase repeatedly describes the land promised to Israel. Cyndi Parker uses it to ask a bigger question: what did “a good land” mean in this particular environment?',src:'Listening to the Land of the Bible I · Land Flowing with Milk and Honey'},
+{level:'CONTEXT',q:'Why is rainfall especially important for understanding biblical descriptions of the land of Israel?',a:['Israel had no natural springs at all','Agriculture depended heavily on seasonal rain from heaven','Rain fell evenly throughout the entire year','The Jordan River irrigated every major farming region'],c:1,fb:'Unlike river-fed Egypt, much of Israel’s agriculture depended on seasonal rainfall. That makes biblical language about rain, obedience, blessing, and dependence much more concrete.',src:'Listening to the Land of the Bible I · Drinking the Water of Heaven'},
+{level:'CONTEXT',q:'Jesus tells a would-be disciple, “Let the dead bury their own dead.” In the interpretation presented by Dr. Eli Lizorkin, what first-century practice helps make sense of this difficult saying?',a:['Roman cremation outside Jerusalem','Secondary burial of bones in an ossuary','Burial at sea for travelers','A prohibition against mourning teachers'],c:1,fb:'The key is secondary burial. After decomposition, bones could later be gathered and placed in an ossuary. On this reading, Jesus is not forbidding the man from honoring his father’s initial burial; the saying stresses the urgency of discipleship.',src:'Jewish Insights Into Scripture I · First Let Me Bury My Father'},
+{level:'DEEPER',q:'The Shephelah sits between Judah’s central hill country and the coastal plain. Why does that geography matter for reading many biblical conflicts?',a:['It isolated Jerusalem from every major route','Its valleys formed natural east–west corridors between the highlands and coastal plain','It was Israel’s principal seaport region','Its permanent snowpack controlled the Jordan River'],c:1,fb:'The Shephelah is a transition zone cut by valleys that provide natural routes between the coast and the hill country. Geography helps explain why this region repeatedly became contested ground.',src:'Listening to the Land of the Bible I · Shephelah'},
+{level:'EXPERT',q:'In Matthew 6, Jesus contrasts a “healthy/good eye” with a “bad eye.” In the Jewish contextual reading emphasized by Dr. Eli Lizorkin, what issue is closely connected to this imagery?',a:['Generosity versus stinginess','Physical eyesight versus blindness','Priestly purity versus impurity','Prophecy versus false prophecy'],c:0,fb:'The surrounding teaching concerns possessions and serving God rather than wealth. In Jewish idiom, the “good eye” is associated with generosity and the “bad/evil eye” with stinginess — making the passage much less mysterious.',src:'Jewish Insights Into Scripture I · The Eye is the Lamp of the Body'}
+];
+let i=0,points=0,locked=false;
+const $=id=>document.getElementById(id);
+function render(){locked=false;let x=questions[i];$('level').textContent=x.level;$('question').textContent=x.q;$('answers').innerHTML='';$('feedback').className='feedback';$('feedback').innerHTML='';$('next').className='next';$('counter').textContent=`Question ${i+1} of ${questions.length}`;$('fill').style.width=`${(i/questions.length)*100}%`;$('source').innerHTML=`<b>Course trail:</b> ${x.src}`;
+x.a.forEach((t,n)=>{let b=document.createElement('button');b.className='answer';b.innerHTML=`<span class="letter">${String.fromCharCode(65+n)}</span><span>${t}</span>`;b.onclick=()=>choose(n);$('answers').appendChild(b)});}
+function choose(n){if(locked)return;locked=true;let x=questions[i],buttons=[...document.querySelectorAll('.answer')];buttons.forEach((b,k)=>{b.disabled=true;if(k===x.c)b.classList.add('correct');else if(k===n)b.classList.add('wrong');else b.classList.add('dim')});if(n===x.c)points++;$('score').textContent=`${points} point${points===1?'':'s'}`;$('feedback').innerHTML=`<strong>${n===x.c?'Nicely spotted.':'Not this time.'}</strong>${x.fb}`;$('feedback').classList.add('show');$('next').textContent=i===questions.length-1?'See your result →':'Next question →';$('next').classList.add('show');$('fill').style.width=`${((i+1)/questions.length)*100}%`;}
+$('next').onclick=()=>{i++;if(i<questions.length)render();else finish()};
+function finish(){$('quiz').style.display='none';$('result').classList.add('show');$('finalScore').textContent=`${points}/6`;let title,text,badge;if(points<=2){badge='🗺️';title='The map is now open';text='A few landmarks escaped you, but that is exactly what context study is for. The Bible’s world gets clearer when language, culture, and geography are allowed into the room.'}else if(points<=4){badge='🧭';title='Context navigator';text='Solid work. You are already reading beyond the surface — and you survived the Shephelah without needing rescue.'}else if(points===5){badge='🏺';title='Very well travelled';text='Excellent. You clearly know how much a difficult saying or a familiar story can change when its ancient setting comes back into view.'}else{badge='🏆';title='Context master';text='Six out of six. Geography, Jewish context, and biblical interpretation all survived the journey intact. Cyndi and Eli would have very little rescuing to do.'}$('badge').textContent=badge;$('resultTitle').textContent=title;$('resultText').textContent=text;}
+function restart(){i=0;points=0;$('score').textContent='0 points';$('quiz').style.display='block';$('result').classList.remove('show');render()}
+render();
+</script>
+</body></html>
